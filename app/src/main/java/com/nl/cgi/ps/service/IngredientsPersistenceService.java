@@ -22,25 +22,36 @@ public class IngredientsPersistenceService {
     /**
      * @return
      */
-    public IngredientsResponse getIngredientsDetails() {
-        return IngredientsResponse.builder().ingredients(ingredientsRepository.findAll()).build();
+    public IngredientsResponse getIngredientsDetails(final long id) {
+        var ingredient = ingredientsRepository.findById(id);
+        if (ingredient !=null && ingredient.isPresent()) {
+            return buildIngredientsResponse(ingredient.get());
+        }
+        return IngredientsResponse.builder().build();
     }
 
     /**
      * @param request
      */
-    public void saveIngredientsDetails(IngredientsRequest request) {
-        var ingredients = ingredientsRepository.findById(request.getIngredientId());
+    public IngredientsResponse saveIngredient(final IngredientsRequest request) {
+        Ingredients ingredient = ingredientsRepository.save(buildIngredientsRequest(request));
+        log.debug("Recipes details saved successfully {}", ingredient.getIngredientsId());
+        return buildIngredientsResponse(ingredient);
+    }
+
+    public IngredientsResponse updateIngredient(final long id, final IngredientsRequest request) {
+        var ingredients = ingredientsRepository.findById(id);
         log.debug(" Recipes details is not found and save the Recipes{}", request.getIngredientName());
         if (ingredients.isPresent()) {
             Ingredients details = ingredients.get();
             details.setIngredientName(request.getIngredientName());
             details.setImageurl(request.getImageURL());
-            ingredientsRepository.save(details);
+            Ingredients ingredient = ingredientsRepository.save(details);
             log.debug("Recipes details saved successfully {}", request.getIngredientName());
+            return buildIngredientsResponse(ingredient);
         } else {
-            ingredientsRepository.save(buildIngredientsDetails(request));
-            log.debug("Recipes details saved successfully {}", request.getIngredientId());
+            log.debug("Recipes is not found {}", id);
+            return IngredientsResponse.builder().build();
         }
     }
 
@@ -48,11 +59,16 @@ public class IngredientsPersistenceService {
      * @param request
      * @return
      */
-    private Ingredients buildIngredientsDetails(IngredientsRequest request) {
+    private Ingredients buildIngredientsRequest(IngredientsRequest request) {
         return Ingredients.builder()
-                .ingredientId(request.getIngredientId() != 0 ? request.getIngredientId() : 0)
                 .ingredientName(request.getIngredientName())
                 .imageurl(request.getImageURL())
+                .build();
+    }
+
+    private IngredientsResponse buildIngredientsResponse(Ingredients response) {
+        return IngredientsResponse.builder()
+                .ingredients(response)
                 .build();
     }
 

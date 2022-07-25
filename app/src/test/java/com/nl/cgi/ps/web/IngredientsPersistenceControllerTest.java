@@ -23,7 +23,9 @@ import static org.mockito.Mockito.*;
 @AutoConfigureMockMvc()
 public class IngredientsPersistenceControllerTest {
 
-    private static final String URI = "/ingredients-persistence-service/ingredients-details";
+    private static final String GET_URI = "/ingredients-persistence-service/ingredients-details?id=1";
+    private static final String UPDATE_URI = "/ingredients-persistence-service/ingredients-details";
+
 
     @Mock
     IngredientsPersistenceService ingredientsPersistenceService;
@@ -42,32 +44,32 @@ public class IngredientsPersistenceControllerTest {
     class TestGetSaveIngredientsDetails {
         @Test
         void testGetIngredientsDetails() throws Exception {
-            when(ingredientsPersistenceService.getIngredientsDetails()).thenReturn(MockDataProvider.getIngredientsDetails());
+            when(ingredientsPersistenceService.getIngredientsDetails(anyLong())).thenReturn(MockDataProvider.getIngredientsDetails());
             mockMvc
-                    .perform(MockMvcRequestBuilders.get(URI)
+                    .perform(MockMvcRequestBuilders.get(GET_URI)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(ingredientsPersistenceService, times(1)).getIngredientsDetails();
+            verify(ingredientsPersistenceService, times(1)).getIngredientsDetails(anyLong());
         }
 
         @Test
         void testSaveIngredientsDetails() throws Exception {
             mockMvc
-                    .perform(MockMvcRequestBuilders.post(URI)
+                    .perform(MockMvcRequestBuilders.post(UPDATE_URI)
                             .content(MockDataProvider.getIngredientsSaveRequest().toString())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(ingredientsPersistenceService, times(1)).saveIngredientsDetails(any());
+            verify(ingredientsPersistenceService, times(1)).saveIngredient(any());
         }
 
         @Test
         void testIngredientsDetailsWhenServiceReturnEmptyList() throws Exception {
-            when(ingredientsPersistenceService.getIngredientsDetails()).thenReturn(null);
+            when(ingredientsPersistenceService.getIngredientsDetails(anyLong())).thenReturn(null);
             mockMvc
-                    .perform(MockMvcRequestBuilders.get(URI)
+                    .perform(MockMvcRequestBuilders.get(GET_URI)
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(ingredientsPersistenceService, times(1)).getIngredientsDetails();
+            verify(ingredientsPersistenceService, times(1)).getIngredientsDetails(anyLong());
         }
 
     }

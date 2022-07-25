@@ -7,21 +7,34 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
-@Table(name = "tbl_ingredients")
+@Table(name = "tbl_recipes")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Embeddable
-public class Ingredients implements Serializable {
+public class Recipes implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long ingredientsId;
+    private long recipeId;
     @NotBlank
-    private String ingredientName;
+    private String recipeName;
+
     @NotBlank
-    private String imageurl;
+    private Integer quantity;
+
+    @Size(max = 5000)
+    private String instructions;
+
+    @Enumerated(EnumType.STRING)
+    private CuisineCategory category;
+
+    @Transient
+    private List<Long> ingredientsList;
+
 }

@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class IngredientsRequest {
 
-    @JsonProperty(value = "ingredientId")
-    private long ingredientId;
     @JsonProperty(value = "ingredientName")
     private String ingredientName;
     @JsonProperty(value = "imageURL")

@@ -24,12 +24,12 @@ public class RecipeIngredients implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "dishId", nullable = false)
+    @JoinColumn(name = "recipeId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
-    private Dishes dishes;
+    private Recipes recipes;
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ingredientId", nullable = false)
+    @JoinColumn(name = "ingredientsId", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
     private Ingredients ingredients;
