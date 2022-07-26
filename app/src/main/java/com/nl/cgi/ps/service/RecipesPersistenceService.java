@@ -4,6 +4,7 @@ package com.nl.cgi.ps.service;
 import com.nl.cgi.ps.dao.model.Ingredients;
 import com.nl.cgi.ps.dao.model.RecipeIngredients;
 import com.nl.cgi.ps.dao.model.Recipes;
+import com.nl.cgi.ps.dao.repository.IngredientsRepository;
 import com.nl.cgi.ps.dao.repository.RecipeIngredientsRepository;
 import com.nl.cgi.ps.dao.repository.RecipesRepository;
 import com.nl.cgi.ps.model.request.RecipesRequest;
@@ -29,6 +30,8 @@ public class RecipesPersistenceService {
     private final RecipesRepository recipesRepository;
     private final RecipeIngredientsRepository recipeIngredientsRepository;
 
+    private final IngredientsRepository ingredientsRepository;
+
     /**
      * @return recipes details
      */
@@ -49,6 +52,10 @@ public class RecipesPersistenceService {
      * @param request recipes request
      */
     public RecipesResponse saveDishDetails(RecipesRequest request) {
+
+        if (!isValidIngredientsId(request)) {
+            return emptyDataRecipesResponse();
+        }
         Recipes recipes = recipesRepository.save(buildRecipesRequest(request));
         if (recipes != null) {
             saveRecipes(request, recipes);
@@ -60,6 +67,15 @@ public class RecipesPersistenceService {
         }
     }
 
+    private boolean isValidIngredientsId(RecipesRequest request) {
+        var ingredient = ingredientsRepository.findAllById(request.getIngredientId());
+        if (ingredient != null && ingredient.size() != request.getIngredientId().size()) {
+            log.error("invalid ingredientsIds {}", request.getIngredientId());
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @param recipeId to delete the data
      * @param request  update
@@ -67,7 +83,7 @@ public class RecipesPersistenceService {
      */
     public RecipesResponse updateRecipeDetails(final long recipeId, final RecipesRequest request) {
         Optional<Recipes> recipes = recipesRepository.findById(recipeId);
-        if (recipes.isPresent()) {
+        if (recipes.isPresent() && isValidIngredientsId(request)) {
             recipeIngredientsRepository.deleteByRecipeId(recipeId);
             Recipes updateRecipe = recipes.get();
             updateRecipe.setRecipeName(request.getRecipeName());
