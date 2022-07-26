@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -49,15 +50,8 @@ public class RecipesPersistenceService {
      */
     public RecipesResponse saveDishDetails(RecipesRequest request) {
         Recipes recipes = recipesRepository.save(buildRecipesRequest(request));
-        List<RecipeIngredients> recipeIngredients = new ArrayList<>();
         if (recipes != null) {
-            for (long id : request.getIngredientId()) {
-                RecipeIngredients re = new RecipeIngredients();
-                re.setIngredients(Ingredients.builder().ingredientsId(id).build());
-                re.setRecipes(recipes);
-                recipeIngredients.add(re);
-            }
-            recipeIngredientsRepository.saveAll(recipeIngredients);
+            saveRecipes(request, recipes);
             log.debug("Recipes details saved successfully {}", request.getRecipeId());
             return buildRecipesResponse(recipes);
         } else {
@@ -67,14 +61,36 @@ public class RecipesPersistenceService {
     }
 
     /**
-     *
      * @param recipeId to delete the data
-     * @param request update
+     * @param request  update
      * @return update recipes details
      */
     public RecipesResponse updateRecipeDetails(final long recipeId, final RecipesRequest request) {
-        recipesRepository.deleteById(recipeId);
-        return saveDishDetails(request);
+        Optional<Recipes> recipes = recipesRepository.findById(recipeId);
+        if (recipes.isPresent()) {
+            recipeIngredientsRepository.deleteByRecipeId(recipeId);
+            Recipes updateRecipe = recipes.get();
+            updateRecipe.setRecipeName(request.getRecipeName());
+            updateRecipe.setInstructions(request.getInstructions());
+            updateRecipe.setCategory(request.getCategory());
+            Recipes savedRecipes = recipesRepository.save(updateRecipe);
+            saveRecipes(request, savedRecipes);
+            log.debug("Recipes details update successfully {}", request.getRecipeId());
+            return buildRecipesResponse(savedRecipes);
+        }
+        log.debug("Recipes detail is not update successfully {}", request.getRecipeId());
+        return emptyDataRecipesResponse();
+    }
+
+    private void saveRecipes(RecipesRequest request, Recipes recipes) {
+        List<RecipeIngredients> recipeIngredients = new ArrayList<>();
+        for (long id : request.getIngredientId()) {
+            RecipeIngredients re = new RecipeIngredients();
+            re.setIngredients(Ingredients.builder().ingredientsId(id).build());
+            re.setRecipes(recipes);
+            recipeIngredients.add(re);
+        }
+        recipeIngredientsRepository.saveAll(recipeIngredients);
     }
 
     /**
