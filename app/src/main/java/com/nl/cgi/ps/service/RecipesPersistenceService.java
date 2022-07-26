@@ -40,7 +40,7 @@ public class RecipesPersistenceService {
             return buildRecipesResponse(dishes.get());
         }
         log.debug(" No recipes details exits");
-        return NoDataRecipesResponse();
+        return emptyDataRecipesResponse();
     }
 
 
@@ -62,31 +62,31 @@ public class RecipesPersistenceService {
             return buildRecipesResponse(recipes);
         } else {
             log.debug("Recipes detail is not saved successfully {}", request.getRecipeId());
-            return NoDataRecipesResponse();
+            return emptyDataRecipesResponse();
         }
     }
 
     /**
      *
-     * @param dishId
-     * @param request
-     * @return
+     * @param recipeId to delete the data
+     * @param request update
+     * @return update recipes details
      */
-    public RecipesResponse updateDishesDetails(final long dishId, RecipesRequest request) {
-        recipesRepository.deleteById(dishId);
+    public RecipesResponse updateRecipeDetails(final long recipeId, final RecipesRequest request) {
+        recipesRepository.deleteById(recipeId);
         return saveDishDetails(request);
     }
 
     /**
-     * @param dishId
+     * @param recipeId unique id to delete recipe
      */
-    public void deleteRecipes(Long dishId) {
-        recipesRepository.deleteById(dishId);
+    public void deleteRecipes(Long recipeId) {
+        recipesRepository.deleteById(recipeId);
     }
 
 
     /**
-     * @return
+     * @return filter the recipe details
      */
     public SearchRecipesResponse getFavouriteFoodRecipesByFilterValue(String category, long quantity, String instructions) {
         List<Recipes> foodRecipeDetails = recipesRepository.filterFavouriteFoodRecipesByFilterValue(category, quantity, instructions);
@@ -95,8 +95,8 @@ public class RecipesPersistenceService {
 
 
     /**
-     * @param request
-     * @return
+     * @param request build
+     * @return recipe request
      */
     private Recipes buildRecipesRequest(RecipesRequest request) {
         return Recipes.builder().
@@ -108,17 +108,17 @@ public class RecipesPersistenceService {
     }
 
     /**
-     * @param recipes
-     * @return
+     * @param recipes from db
+     * @return build the recipe response
      */
     private RecipesResponse buildRecipesResponse(Recipes recipes) {
         return RecipesResponse.builder().recipes(recipes).build();
     }
 
     /**
-     * @return
+     * @return empty recipe details
      */
-    private RecipesResponse NoDataRecipesResponse() {
+    private RecipesResponse emptyDataRecipesResponse() {
         return RecipesResponse.builder().build();
     }
 

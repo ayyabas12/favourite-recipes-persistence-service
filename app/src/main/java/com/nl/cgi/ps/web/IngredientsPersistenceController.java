@@ -10,8 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-
+/**
+ *
+ */
 @RestController
 @Slf4j
 @RequestMapping("/ingredients-persistence-service/ingredients-details")
@@ -22,7 +23,7 @@ public class IngredientsPersistenceController {
     private final IngredientsPersistenceService ingredientsPersistenceService;
 
     /**
-     * @return
+     * @return Ingredients details
      */
     @GetMapping
     public ResponseEntity<IngredientsResponse> getIngredientsDetail(final @RequestParam(name = "id") long id) {
@@ -32,15 +33,21 @@ public class IngredientsPersistenceController {
     }
 
     /**
-     * @param recipesRequest
-     * @return
+     * @param ingredientsRequest request to save
+     * @return saved ingredients
      */
     @PostMapping
-    public ResponseEntity<IngredientsResponse> saveIngredient(@RequestBody IngredientsRequest recipesRequest) {
+    public ResponseEntity<IngredientsResponse> saveIngredient(@RequestBody IngredientsRequest ingredientsRequest) {
         log.info("Inside save Ingredients method call");
-        return ResponseEntity.ok(ingredientsPersistenceService.saveIngredient(recipesRequest));
+        return ResponseEntity.ok(ingredientsPersistenceService.saveIngredient(ingredientsRequest));
     }
 
+    /**
+     *
+     * @param id ingredients id to update
+     * @param recipesRequest details
+     * @return updated ingredients
+     */
     @PutMapping("{id}")
     public ResponseEntity<IngredientsResponse> UpdateIngredient(@PathVariable("id") long id, @RequestBody IngredientsRequest recipesRequest) {
         log.info("Inside update Ingredients method call");

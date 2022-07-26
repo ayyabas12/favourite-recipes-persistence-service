@@ -31,7 +31,7 @@ public class IngredientsPersistenceService {
     }
 
     /**
-     * @param request
+     * @param request ingredientsRequest
      */
     public IngredientsResponse saveIngredient(final IngredientsRequest request) {
         Ingredients ingredient = ingredientsRepository.save(buildIngredientsRequest(request));
@@ -39,6 +39,12 @@ public class IngredientsPersistenceService {
         return buildIngredientsResponse(ingredient);
     }
 
+    /**
+     *
+     * @param id of ingredient
+     * @param request of ingredient
+     * @return update ingredient
+     */
     public IngredientsResponse updateIngredient(final long id, final IngredientsRequest request) {
         var ingredients = ingredientsRepository.findById(id);
         log.debug(" Recipes details is not found and save the Recipes{}", request.getIngredientName());
@@ -56,8 +62,8 @@ public class IngredientsPersistenceService {
     }
 
     /**
-     * @param request
-     * @return
+     * @param request build ingredient
+     * @return ingredient
      */
     private Ingredients buildIngredientsRequest(IngredientsRequest request) {
         return Ingredients.builder()
