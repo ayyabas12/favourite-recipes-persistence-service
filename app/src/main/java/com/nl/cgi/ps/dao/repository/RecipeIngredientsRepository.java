@@ -12,9 +12,6 @@ public interface RecipeIngredientsRepository extends JpaRepository<RecipeIngredi
 
 
     @Query(value = "SELECT INGREDIENTS_ID, from TBL_RECIPE_INGREDIENTS where RECIPE_ID  =:RecipeId", nativeQuery = true)
-    public List<Long> getAllIngredientsByRecipeID(@Param("RecipeId") long recipeId);
-
-    @Query(value = "SELECT INGREDIENTS_ID, from TBL_RECIPE_INGREDIENTS where RECIPE_ID IN (:RecipeId)", nativeQuery = true)
-    public List<Long> getAllIngredientsByRecipeID(@Param("RecipeId") List<Long> RecipeId);
+    List<Long> getAllIngredientsByRecipeID(@Param("RecipeId") long recipeId);
 
 }

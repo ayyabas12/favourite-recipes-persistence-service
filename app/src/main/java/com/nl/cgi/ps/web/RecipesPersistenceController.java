@@ -25,7 +25,7 @@ public class RecipesPersistenceController {
      */
     @GetMapping
     public ResponseEntity<RecipesResponse> getRecipesDetails(final @RequestParam(name = "id") long id) {
-        log.info("Inside request Dishes dishes call");
+        log.info("Inside request recipe call");
         RecipesResponse response = recipesPersistenceService.getDishesDetails(id);
         return ResponseEntity.ok(response);
     }

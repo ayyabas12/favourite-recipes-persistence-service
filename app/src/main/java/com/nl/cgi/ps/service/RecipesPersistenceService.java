@@ -29,21 +29,23 @@ public class RecipesPersistenceService {
     private final RecipeIngredientsRepository recipeIngredientsRepository;
 
     /**
-     * @return
+     * @return recipes details
      */
     public RecipesResponse getDishesDetails(final long id) {
         var dishes = recipesRepository.findById(id);
         var ingredients = recipeIngredientsRepository.getAllIngredientsByRecipeID(id);
         if (dishes.isPresent()) {
             dishes.get().setIngredientsList(ingredients);
+            log.debug(" get recipes details successfully {}", dishes.get().getRecipeId());
             return buildRecipesResponse(dishes.get());
         }
+        log.debug(" No recipes details exits");
         return NoDataRecipesResponse();
     }
 
 
     /**
-     * @param request
+     * @param request recipes request
      */
     public RecipesResponse saveDishDetails(RecipesRequest request) {
         Recipes recipes = recipesRepository.save(buildRecipesRequest(request));
@@ -59,10 +61,17 @@ public class RecipesPersistenceService {
             log.debug("Recipes details saved successfully {}", request.getRecipeId());
             return buildRecipesResponse(recipes);
         } else {
+            log.debug("Recipes detail is not saved successfully {}", request.getRecipeId());
             return NoDataRecipesResponse();
         }
     }
 
+    /**
+     *
+     * @param dishId
+     * @param request
+     * @return
+     */
     public RecipesResponse updateDishesDetails(final long dishId, RecipesRequest request) {
         recipesRepository.deleteById(dishId);
         return saveDishDetails(request);
