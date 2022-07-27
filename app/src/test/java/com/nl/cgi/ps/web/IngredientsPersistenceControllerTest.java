@@ -24,7 +24,9 @@ import static org.mockito.Mockito.*;
 public class IngredientsPersistenceControllerTest {
 
     private static final String GET_URI = "/ingredients-persistence-service/ingredients-details?id=1";
-    private static final String UPDATE_URI = "/ingredients-persistence-service/ingredients-details";
+    private static final String SAVE_URI = "/ingredients-persistence-service/ingredients-details";
+
+    private static final String UPDATE_URI = "/ingredients-persistence-service/ingredients-details/1";
 
 
     @Mock
@@ -55,12 +57,23 @@ public class IngredientsPersistenceControllerTest {
         @Test
         void testSaveIngredientsDetails() throws Exception {
             mockMvc
-                    .perform(MockMvcRequestBuilders.post(UPDATE_URI)
+                    .perform(MockMvcRequestBuilders.post(SAVE_URI)
                             .content(MockDataProvider.getIngredientsSaveRequest().toString())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
             verify(ingredientsPersistenceService, times(1)).saveIngredient(any());
         }
+
+        @Test
+        void testUpdateIngredientsDetails() throws Exception {
+            mockMvc
+                    .perform(MockMvcRequestBuilders.put(UPDATE_URI)
+                            .content(MockDataProvider.getIngredientsSaveRequest().toString())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+            verify(ingredientsPersistenceService, times(1)).updateIngredient(anyLong(), any());
+        }
+
 
         @Test
         void testIngredientsDetailsWhenServiceReturnEmptyList() throws Exception {

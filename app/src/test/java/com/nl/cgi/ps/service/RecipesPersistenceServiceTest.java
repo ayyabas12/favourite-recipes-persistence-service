@@ -1,6 +1,7 @@
 package com.nl.cgi.ps.service;
 
 
+import com.nl.cgi.ps.dao.repository.IngredientsRepository;
 import com.nl.cgi.ps.dao.repository.RecipeIngredientsRepository;
 import com.nl.cgi.ps.dao.repository.RecipesRepository;
 import com.nl.cgi.ps.mockdata.MockDataProvider;
@@ -29,9 +30,13 @@ class RecipesPersistenceServiceTest {
     @Mock
     RecipeIngredientsRepository recipeIngredientsRepository;
 
+    @Mock
+    IngredientsRepository ingredientsRepository;
+
+
     @BeforeEach
     public void setup() {
-        recipesPersistenceService = new RecipesPersistenceService(recipesRepository, recipeIngredientsRepository);
+        recipesPersistenceService = new RecipesPersistenceService(recipesRepository, recipeIngredientsRepository, ingredientsRepository);
     }
 
     @Nested
@@ -40,7 +45,7 @@ class RecipesPersistenceServiceTest {
         @Test
         void testGetDishesDetails() {
             when(recipesRepository.findById(anyLong())).thenReturn(MockDataProvider.getDishesDetailsPS());
-            RecipesResponse response = recipesPersistenceService.getDishesDetails(1l);
+            RecipesResponse response = recipesPersistenceService.getDishesDetails(1L);
             assertAll(
                     () -> assertNotNull(response),
                     () -> assertEquals("chicken breast curry", response.getRecipes().getRecipeName()),
