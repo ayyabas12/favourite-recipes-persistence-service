@@ -26,7 +26,7 @@ public class RecipesPersistenceController {
     @GetMapping
     public ResponseEntity<RecipesResponse> getRecipesDetails(final @RequestParam(name = "id") long id) {
         log.info("Inside request recipe call");
-        RecipesResponse response = recipesPersistenceService.getDishesDetails(id);
+        RecipesResponse response = recipesPersistenceService.getRecipeDetails(id);
         return ResponseEntity.ok(response);
     }
 
@@ -37,7 +37,7 @@ public class RecipesPersistenceController {
     @PostMapping
     public ResponseEntity<RecipesResponse> saveRecipesDetails(@RequestBody RecipesRequest recipesRequest) {
         log.info("Inside save Recipes method call");
-        return ResponseEntity.ok(recipesPersistenceService.saveDishDetails(recipesRequest));
+        return ResponseEntity.ok(recipesPersistenceService.saveRecipeDetails(recipesRequest));
     }
 
     /**

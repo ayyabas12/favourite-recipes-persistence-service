@@ -35,7 +35,7 @@ public class RecipesPersistenceService {
     /**
      * @return recipes details
      */
-    public RecipesResponse getDishesDetails(final long id) {
+    public RecipesResponse getRecipeDetails(final long id) {
         var dishes = recipesRepository.findById(id);
         var ingredients = recipeIngredientsRepository.getAllIngredientsByRecipeID(id);
         if (dishes.isPresent()) {
@@ -51,7 +51,7 @@ public class RecipesPersistenceService {
     /**
      * @param request recipes request
      */
-    public RecipesResponse saveDishDetails(RecipesRequest request) {
+    public RecipesResponse saveRecipeDetails(RecipesRequest request) {
 
         if (!isValidIngredientsId(request)) {
             return emptyDataRecipesResponse();

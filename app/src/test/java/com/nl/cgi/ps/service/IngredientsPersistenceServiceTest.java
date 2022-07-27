@@ -32,12 +32,35 @@ class IngredientsPersistenceServiceTest {
     }
 
     @Nested
-    @DisplayName("Get and Save the dishes Details")
-    class RequestGetSaveRecipesDetails {
+    @DisplayName("Get and Save the Ingredients Details")
+    class RequestGetSaveIngredientsDetails {
         @Test
-        void testGetDishesDetails() {
+        void testGetIngredientsDetails() {
             when(ingredientsRepository.findById(anyLong())).thenReturn(MockDataProvider.getIngredientsDetailsList());
             IngredientsResponse response = ingredientsPersistenceService.getIngredientsDetails(1l);
+            assertAll(
+                    () -> assertNotNull(response),
+                    () -> assertEquals("chicken", response.getIngredients().getIngredientName()),
+                    () -> assertEquals(1, response.getIngredients().getIngredientsId())
+            );
+        }
+
+        @Test
+        void testSaveIngredientsDetails() {
+            when(ingredientsRepository.save(any())).thenReturn(MockDataProvider.getIngredientForSave());
+            IngredientsResponse response = ingredientsPersistenceService.saveIngredient(MockDataProvider.getIngredientsServiceRequest());
+            assertAll(
+                    () -> assertNotNull(response),
+                    () -> assertEquals("chicken", response.getIngredients().getIngredientName()),
+                    () -> assertEquals(1, response.getIngredients().getIngredientsId())
+            );
+        }
+
+        @Test
+        void testUpdateIngredientsDetails() {
+            when(ingredientsRepository.findById(anyLong())).thenReturn(MockDataProvider.getIngredientsDetailsList());
+            when(ingredientsRepository.save(any())).thenReturn(MockDataProvider.getIngredientForSave());
+            IngredientsResponse response = ingredientsPersistenceService.updateIngredient(anyLong(), MockDataProvider.getIngredientsServiceRequest());
             assertAll(
                     () -> assertNotNull(response),
                     () -> assertEquals("chicken", response.getIngredients().getIngredientName()),

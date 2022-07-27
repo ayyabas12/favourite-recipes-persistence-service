@@ -13,23 +13,26 @@ import java.util.*;
 public class MockDataProvider {
 
 
-    public static RecipesResponse getDishesDetails() {
+    public static RecipesResponse getRecipeDetails() {
         var dishes1 = Recipes.builder().recipeId(1).recipeName("chicken breast curry").category(CuisineCategory.NON_VEGETARIAN).quantity(2).instructions("chicken recipe").build();
         return RecipesResponse.builder().recipes(dishes1).build();
     }
-    public static Optional<Recipes> getDishesDetailsPS() {
+
+    public static Optional<Recipes> getRecipeDetailsPS() {
         var dishes1 = Recipes.builder().recipeId(1).recipeName("chicken breast curry").category(CuisineCategory.NON_VEGETARIAN).quantity(2).instructions("chicken recipe").build();
         return Optional.of(dishes1);
     }
 
-    public static List<Recipes> getDishesDetailsList() {
+    public static List<Recipes> getRecipeDetailsList() {
         var dishes1 = Recipes.builder().recipeId(1).recipeName("chicken breast curry").category(CuisineCategory.NON_VEGETARIAN).quantity(2).instructions("chicken recipe").build();
-        var dishes2 = Recipes.builder().recipeId(2).recipeName("tomato soup recipe").category(CuisineCategory.VEGETARIAN).quantity(3).instructions("tomato recipe").build();
-        return Arrays.asList(dishes1, dishes2);
+        return Arrays.asList(dishes1);
     }
 
+    public static Recipes getRecipe() {
+        return Recipes.builder().recipeId(1).recipeName("chicken breast curry").category(CuisineCategory.NON_VEGETARIAN).quantity(2).instructions("chicken recipe").build();
+    }
 
-    public static JsonObject getDishesSaveRequest() {
+    public static JsonObject getRecipeSaveRequest() {
         return MockJsonBuilder.aRequest()
                 .withProperty("recipeName", "chicken breast")
                 .withProperty("quantity", "2")
@@ -38,10 +41,11 @@ public class MockDataProvider {
                 .build();
     }
 
+
+
     public static JsonObject getDishesUpdateRequest() {
         return MockJsonBuilder.aRequest()
-                .withProperty("dishId", "1")
-                .withProperty("dishName", "chicken breast")
+                .withProperty("recipeName", "chicken breast")
                 .withProperty("quantity", "2")
                 .withProperty("instructions", "chicken breast make ")
                 .withProperty("category", CuisineCategory.NON_VEGETARIAN.name())
@@ -54,8 +58,8 @@ public class MockDataProvider {
     }
 
 
-    public static RecipesRequest getDishesServiceRequest() {
-        return RecipesRequest.builder().recipeId(1).build();
+    public static RecipesRequest getRecipesServiceRequest() {
+        return RecipesRequest.builder().recipeId(1).ingredientId(Arrays.asList(1L,2L)).build();
     }
 
 
@@ -68,6 +72,15 @@ public class MockDataProvider {
         return Optional.of(Ingredients.builder().ingredientsId(1).ingredientName("chicken").build());
     }
 
+    public static Ingredients getIngredientForSave() {
+        return Ingredients.builder().ingredientsId(1).ingredientName("chicken").build();
+    }
+
+    public static List<Ingredients> getIngredientsList() {
+        var ingredient = Ingredients.builder().ingredientsId(1).ingredientName("chicken").build();
+        var ingredient1 = Ingredients.builder().ingredientsId(2).ingredientName("mutton").build();
+        return Arrays.asList(ingredient, ingredient1);
+    }
 
 
     public static JsonObject getIngredientsSaveRequest() {

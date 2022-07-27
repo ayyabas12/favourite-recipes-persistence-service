@@ -47,7 +47,7 @@ public class IngredientsPersistenceService {
      */
     public IngredientsResponse updateIngredient(final long id, final IngredientsRequest request) {
         var ingredients = ingredientsRepository.findById(id);
-        log.debug(" Recipes details is not found and save the Recipes{}", request.getIngredientName());
+        log.debug(" Recipes details is found and update the Recipes{}", request.getIngredientName());
         if (ingredients.isPresent()) {
             Ingredients details = ingredients.get();
             details.setIngredientName(request.getIngredientName());

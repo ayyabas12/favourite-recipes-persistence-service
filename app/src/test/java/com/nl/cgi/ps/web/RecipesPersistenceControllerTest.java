@@ -28,6 +28,8 @@ public class RecipesPersistenceControllerTest {
 
     private static final String URI = "/dishes-persistence-service/recipes";
     private static final String DELETE_URI = "/dishes-persistence-service/recipes?id=1";
+    private static final String UPDATE_URI = "/dishes-persistence-service/recipes/1";
+    private static final String SEARCH_URI = "/dishes-persistence-service/recipes/search?category=\"VEGETARIAN\"&quantity=3&instructions=\"vegetarian\"";
 
     @Mock
     RecipesPersistenceService recipesPersistenceService;
@@ -45,37 +47,56 @@ public class RecipesPersistenceControllerTest {
     @DisplayName("Get get and save call all scenario")
     class TestGetSaveRecipesDetails {
         @Test
-        void testGetDishesDetails() throws Exception {
-            when(recipesPersistenceService.getDishesDetails(anyLong())).thenReturn(MockDataProvider.getDishesDetails());
+        void testGetRecipesDetails() throws Exception {
+            when(recipesPersistenceService.getRecipeDetails(anyLong())).thenReturn(MockDataProvider.getRecipeDetails());
             mockMvc
                     .perform(MockMvcRequestBuilders.get(URI + "?id=1")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(recipesPersistenceService, times(1)).getDishesDetails(anyLong());
+            verify(recipesPersistenceService, times(1)).getRecipeDetails(anyLong());
         }
 
         @Test
-        void testSaveDishesDetails() throws Exception {
+        void testSaveRecipesDetails() throws Exception {
             mockMvc
                     .perform(MockMvcRequestBuilders.post(URI)
-                            .content(MockDataProvider.getDishesSaveRequest().toString())
+                            .content(MockDataProvider.getRecipeSaveRequest().toString())
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(recipesPersistenceService, times(1)).saveDishDetails(any());
+            verify(recipesPersistenceService, times(1)).saveRecipeDetails(any());
         }
 
         @Test
-        void testDishesDetailsWhenServiceReturnEmptyList() throws Exception {
-            when(recipesPersistenceService.getDishesDetails(anyLong())).thenReturn(null);
+        void testUpdateRecipesDetails() throws Exception {
+            mockMvc
+                    .perform(MockMvcRequestBuilders.put(UPDATE_URI)
+                            .content(MockDataProvider.getDishesUpdateRequest().toString())
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+            verify(recipesPersistenceService, times(1)).updateRecipeDetails(anyLong(), any());
+        }
+
+        @Test
+        void testSearchRecipesDetails() throws Exception {
+            mockMvc
+                    .perform(MockMvcRequestBuilders.get(SEARCH_URI)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+            verify(recipesPersistenceService, times(1)).getFavouriteFoodRecipesByFilterValue(any(), anyLong(), any());
+        }
+
+        @Test
+        void testRecipesDetailsWhenServiceReturnEmptyList() throws Exception {
+            when(recipesPersistenceService.getRecipeDetails(anyLong())).thenReturn(null);
             mockMvc
                     .perform(MockMvcRequestBuilders.get(URI + "?id=1")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(MockMvcResultMatchers.status().isOk());
-            verify(recipesPersistenceService, times(1)).getDishesDetails(anyLong());
+            verify(recipesPersistenceService, times(1)).getRecipeDetails(anyLong());
         }
 
         @Test
-        void testDeleteDishesDetails() throws Exception {
+        void testDeleteRecipesDetails() throws Exception {
             mockMvc
                     .perform(MockMvcRequestBuilders.delete(DELETE_URI)
                             .contentType(MediaType.APPLICATION_JSON))
